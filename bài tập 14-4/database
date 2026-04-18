@@ -1,0 +1,19 @@
+import sqlite3
+
+conn = sqlite3.connect("members.db")
+cursor = conn.cursor()
+
+cursor.execute("""
+CREATE TABLE IF NOT EXISTS members (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    first_name TEXT,
+    last_name TEXT,
+    phone TEXT,
+    password TEXT,
+    birth TEXT,
+    gender TEXT
+)
+""")
+
+conn.commit()
+conn.close()
