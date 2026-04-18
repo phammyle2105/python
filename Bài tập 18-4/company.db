@@ -1,0 +1,55 @@
+import sqlite3
+
+# Tạo / kết nối database
+conn = sqlite3.connect("company.db")
+cursor = conn.cursor()
+
+# Xóa bảng cũ nếu có (tránh lỗi khi chạy lại)
+cursor.execute("DROP TABLE IF EXISTS employee")
+cursor.execute("DROP TABLE IF EXISTS department")
+
+# Tạo bảng department
+cursor.execute("""
+CREATE TABLE department (
+    id INTEGER PRIMARY KEY,
+    name TEXT,
+    location TEXT
+)
+""")
+
+# Tạo bảng employee
+cursor.execute("""
+CREATE TABLE employee (
+    id INTEGER PRIMARY KEY,
+    name TEXT,
+    job TEXT,
+    salary INTEGER,
+    dept_id INTEGER,
+    FOREIGN KEY (dept_id) REFERENCES department(id)
+)
+""")
+
+# Thêm dữ liệu mẫu vào department
+departments = [
+    (10, "HR", "Hanoi"),
+    (20, "Finance", "HCM"),
+    (30, "IT", "Danang")
+]
+
+cursor.executemany("INSERT INTO department VALUES (?, ?, ?)", departments)
+
+# Thêm dữ liệu mẫu vào employee
+employees = [
+    (1, "CLARK", "MANAGER", 2000, 10),
+    (2, "KING", "MANAGER", 3000, 20),
+    (3, "MILLER", "CLERK", 1000, 10),
+    (4, "SMITH", "DEVELOPER", 1500, 30)
+]
+
+cursor.executemany("INSERT INTO employee VALUES (?, ?, ?, ?, ?)", employees)
+
+# Lưu lại
+conn.commit()
+conn.close()
+
+print("Tạo database company.db thành công!")
